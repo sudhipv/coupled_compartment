@@ -1,0 +1,11 @@
+#######STATUS
+
+1. Real case
+
+ran coupled, single toronto and durham. But some error in coupled case
+
+
+
+Synth
+
+1. ran toronto case.
