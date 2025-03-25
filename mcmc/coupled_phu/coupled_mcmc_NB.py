@@ -21,79 +21,89 @@ np.random.seed(106)  # fixing the random seed
 
 parallel_processing = 'multiprocessing' #'multiprocessing','mpi'
 
-print("code started")
+# print("code started")
 Npar = 20 # number of unknown parameters
+
+x_MLE_low = np.zeros([20])
+x_MLE_up = np.zeros([20])
+
+bval = 0.2
 
 # # MLE values
 
-### For REAL DATA
+########### REAL  DATA ##################
+
 # [ 0.15530582 -0.11440652  0.068809   -0.06500159  0.02018632  0.08993903
 #  -0.03972402 -0.01715194  0.1114486  -0.06963404  0.00147462 -0.0326881
 #   0.03587561  0.03286086 -0.11130769  0.11692651]
 
 
-x_MLE_low = np.zeros([20])
-x_MLE_up = np.zeros([20])
+# x_MLE_low = [ 0, 0 , 0.15530582-bval, -0.11440652-bval,  0.068809-bval,   -0.06500159-bval,  0.02018632-bval,  0.08993903-bval, \
+#  -0.03972402-bval, -0.01715194-bval, 0, 0,  0.1114486-bval,  -0.06963404-bval,  0.00147462-bval, -0.0326881-bval, \
+#   0.03587561-bval,  0.03286086-bval, -0.11130769-bval,  0.11692651-bval]
 
-bval = 0.05
-
-x_MLE_low = [ 0, 0 , 0.15530582-bval, -0.11440652-bval,  0.068809-bval,   -0.06500159-bval,  0.02018632-bval,  0.08993903-bval, \
- -0.03972402-bval, -0.01715194-bval, 0, 0,  0.1114486-bval,  -0.06963404-bval,  0.00147462-bval, -0.0326881-bval, \
-  0.03587561-bval,  0.03286086-bval, -0.11130769-bval,  0.11692651-bval]
-
-x_MLE_up = [0.001 * 2794356.0, 0.001 * 2794356.0,  0.15530582+bval, -0.11440652+bval,  0.068809+bval,   -0.06500159+bval,  0.02018632+bval,  0.08993903+bval, \
- -0.03972402+bval, -0.01715194+bval, 0.001 * 696992.0, 0.001 * 696992.0,  0.1114486+bval,  -0.06963404+bval,  0.00147462+bval, -0.0326881+bval, \
-  0.03587561+bval,  0.03286086+bval, -0.11130769+bval,  0.11692651+bval]
+# x_MLE_up = [0.001 * 2794356.0, 0.001 * 2794356.0,  0.15530582+bval, -0.11440652+bval,  0.068809+bval,   -0.06500159+bval,  0.02018632+bval,  0.08993903+bval, \
+#  -0.03972402+bval, -0.01715194+bval, 0.001 * 696992.0, 0.001 * 696992.0,  0.1114486+bval,  -0.06963404+bval,  0.00147462+bval, -0.0326881+bval, \
+#   0.03587561+bval,  0.03286086+bval, -0.11130769+bval,  0.11692651+bval]
 
 
 ########### SYNTHETIC DATA ##################
 
-# a01 =   0.15
-# a11 =  -0.1
-# a21 =   0.05
-# a31 =   -0.07
-# a41=  0.035
-# a51 =  0.08
-# a61 =  -0.065
-# a71 =  0.025
-# # a81 =  -0.015
+a01 =   0.15
+a11 =  -0.1
+a21 =   0.05
+a31 =   -0.07
+a41=  0.035
+a51 =  0.08
+a61 =  -0.065
+a71 =  0.025
+# a81 =  -0.015
 
-# a02 =   0.14
-# a12 =  -0.115
-# a22 =   0.06
-# a32 =   -0.05
-# a42 =  0.035
-# a52 =  0.06
-# a62 =  -0.075
-# a72 =  0.06
-# # a82 =  -0.025
+a02 =   0.14
+a12 =  -0.115
+a22 =   0.06
+a32 =   -0.05
+a42 =  0.035
+a52 =  0.06
+a62 =  -0.075
+a72 =  0.06
+# a82 =  -0.025
 
-# phiTrue = [a01,a11,a21,a31,a41,a51,a61,a71, a02,a12,a22,a32,a42,a52,a62,a72]
+# 210 cutoff
+phiTrue = [430,430 ,a01,a11,a21,a31,a41,a51,a61,a71, 94,94, a02,a12,a22,a32,a42,a52,a62,a72]
 
-
-# x_MLE_low = np.zeros([16])
-# x_MLE_up = np.zeros([16])
-
-# bval = 0.05
-
-# x_MLE_low = [ 0.15478438 - bval , -0.10441809 - bval, 0.04505573 - bval, -0.05512462 - bval, \
-#             0.01869748 - bval,  0.08734956 - bval, -0.07633955 - bval, 0.0593924 - bval, \
-#             0.12858173 -bval,  -0.09107275 - bval, 0.05155948 - bval,  -0.07005601 - bval, 0.05614092 - bval,
-#             0.06530606 - bval,  -0.08574362 - bval, 0.12503362 - bval]
+#### MLE estimates
+# [ 0.15062696 -0.10442009  0.05794303 -0.07842871  0.03928469  0.08009362
+#  -0.07175242  0.03570238  0.14112474 -0.114738    0.05581739 -0.04533642
+#   0.03257459  0.06379187 -0.07886659  0.06675659]
 
 
-# x_MLE_up = [ 0.15478438 + bval , -0.10441809 + bval, 0.04505573 + bval, -0.05512462 + bval, \
-#             0.01869748 + bval,  0.08734956 + bval, -0.07633955 + bval, 0.0593924 + bval, \
-#             0.12858173 + bval,  -0.09107275 + bval, 0.05155948 + bval,  -0.07005601 + bval, 0.05614092 + bval,
-#             0.06530606 + bval,  -0.08574362 + bval, 0.12503362 + bval]
+
+x_MLE_low = [ 0, 0 , 0.15062696 - bval , -0.10442009 - bval, 0.05794303 - bval, -0.07842871 - bval, 0.03928469 - bval, 0.08009362 - bval, -0.07175242 - bval, 0.03570238 - bval, \
+              0, 0, 0.14112474 -bval,  -0.114738 - bval, 0.05581739 - bval,  -0.04533642 - bval, 0.03257459 - bval,0.06379187 - bval,  -0.07886659 - bval, 0.06675659 - bval]
+
+
+x_MLE_up = [ 0.001 * 2794356.0, 0.001 * 2794356.0 , 0.15062696 + bval , -0.10442009 + bval, 0.05794303 + bval, -0.07842871 + bval,0.03928469 + bval,  0.08009362 + bval, -0.07175242 + bval, 0.03570238 + bval, \
+             0.001 * 696992.0, 0.001 * 696992.0, 0.14112474 + bval,  -0.114738 + bval, 0.05581739 + bval,  -0.04533642 + bval, 0.03257459 + bval,0.06379187 + bval,  -0.07886659 + bval, 0.06675659 + bval]
+
+
+## 160 cut-off
+# phiTrue = [430,430 ,a01,a11,a21,a31,a41,a51, 94,94, a02,a12,a22,a32,a42,a52]
+
+# x_MLE_low = [ 0, 0 , 0.15062696 - bval , -0.10442009 - bval, 0.05794303 - bval, -0.07842871 - bval, 0.03928469 - bval,  0.08009362 - bval, \
+#               0, 0, 0.14112474 -bval,  -0.114738 - bval, 0.05581739 - bval,  -0.04533642 - bval, 0.03257459 - bval, 0.06379187 - bval]
+
+
+# x_MLE_up = [ 0.001 * 2794356.0, 0.001 * 2794356.0 , 0.15062696 + bval , -0.10442009 + bval, 0.05794303 + bval, -0.07842871 + bval, 0.03928469 + bval,  0.08009362 + bval, \
+#             0.001 * 696992.0, 0.001 * 696992.0, 0.14112474 + bval,  -0.114738 + bval, 0.05581739 + bval,  -0.04533642 + bval, 0.03257459 + bval, 0.06379187 + bval]
 
 ############################# ############################# #############################
 
 X_low = x_MLE_low
 X_up = x_MLE_up
 
-mylabel = [r'$E_{0}^{1}$',r'$I_{0}^{1}$', r'$a_{0}^{1}$',r'$a_{1}^{1}$', r'$a_{2}^{1}$',r'$a_{3}^{1}$', r'$a_{4}^{1}$',r'$a_{5}^{1}$', r'$a_{6}^{1}$', r'$a_{7}^{1}$',\
-           r'$E_{0}^{2}$',r'$I_{0}^{2}$', r'$a_{0}^{2}$',r'$a_{1}^{2}$', r'$a_{2}^{2}$',r'$a_{3}^{2}$', r'$a_{4}^{2}$',r'$a_{5}^{2}$', r'$a_{6}^{2}$',r'$a_{7}^{2}$']
+mylabel = [r'$E_{0}^{1}$',r'$I_{0}^{1}$', r'$a_{0}^{1}$',r'$a_{1}^{1}$', r'$a_{2}^{1}$',r'$a_{3}^{1}$', r'$a_{4}^{1}$',r'$a_{5}^{1}$',r'$a_{6}^{1}$',r'$a_{7}^{1}$',\
+           r'$E_{0}^{2}$',r'$I_{0}^{2}$', r'$a_{0}^{2}$',r'$a_{1}^{2}$', r'$a_{2}^{2}$',r'$a_{3}^{2}$', r'$a_{4}^{2}$',r'$a_{5}^{2}$',r'$a_{6}^{2}$',r'$a_{7}^{2}$']
 
 #Generates random variables for each of the parameters:
 all_params = [None] * Npar #initialize list of parameters
@@ -140,9 +150,14 @@ N = np.zeros((len(tmoh),N_city))
 
 
 PHU_path = '/Users/sudhipv/documents/coupled_compartment/PHU_Data'
-figpath = '/Users/sudhipv/documents/coupled_compartment/figs/mcmc'
+figpath = '/Users/sudhipv/documents/coupled_compartment/figs'
 datapath = '/Users/sudhipv/documents/coupled_compartment/data'
 mobpath = '/Users/sudhipv/documents/coupled_compartment/mobility_tensor'
+
+# PHU_path = './../../PHU_Data'
+# figpath = './figs'
+# datapath = './../../data'
+# mobpath = './../../mobility_tensor'
 
 Data = np.zeros([365,4])
 
@@ -243,7 +258,7 @@ for w in range(mrange): # 39
         M[3,:,:,mindex2] = Mtensor[13+w,0:N_city,0:N_city]
 
 
-print("mobility matrix created")
+# print("mobility matrix created")
 
 ##### Force of infection , Lambda
 L_Force = np.zeros((len(tmoh),N_city))
@@ -259,15 +274,17 @@ total[1] = population_by_phu[3,1]
 ####### CHANGE HERE #####################
 #### FOR LOADING YOUR SYNTHETIC DATA
 
-# I_synthetic = np.zeros((len(t),N_city))
-# # file = np.genfromtxt(f'{datapath}/toronto_synthetic_data_noise10.csv', delimiter=',')
-# file = np.genfromtxt(f'{datapath}/toronto_synthetic_data_r100.csv', delimiter=',')
-# I_synthetic[:,0] = file[tstart:tlim]
+
+I_synthetic = np.zeros((len(t),N_city))
+# file = np.genfromtxt(f'{datapath}/toronto_synthetic_data_noise10.csv', delimiter=',')
+file = np.genfromtxt(f'{datapath}/coupled_synth_data_r100.csv', delimiter=',')
+I_synthetic[:,0] = file[tstart:tlim,0]
+I_synthetic[:,1] = file[tstart:tlim,1]
 
 #### OBSERVED MOH DATA
-I_synthetic = np.zeros((len(t),N_city))
-I_synthetic[:,0] =  Data[tstart:tlim,0]
-I_synthetic[:,1] =  Data[tstart:tlim,2]
+# I_synthetic = np.zeros((len(t),N_city))
+# I_synthetic[:,0] =  Data[tstart:tlim,0]
+# I_synthetic[:,1] =  Data[tstart:tlim,2]
 
 
 r = 100 ### number of successes
@@ -294,8 +311,8 @@ def loglikfun(param):
     t7 = 190
     t8 = 230
 
-    beta_i[:,0] = param[2] + param[3]/(1 + np.exp((t1-tmoh))) +  param[4]/(1 + np.exp((t2-tmoh))) + param[5]/(1 + np.exp((t3-tmoh))) + param[6]/(1 + np.exp((t4-tmoh))) + param[7]/(1 + np.exp((t5-tmoh))) \
-                    + param[8]/(1 + np.exp((t6-tmoh))) + param[9]/(1 + np.exp((t7-tmoh)))
+    beta_i[:,0] = param[2] + param[3]/(1 + np.exp((t1-tmoh))) +  param[4]/(1 + np.exp((t2-tmoh))) + param[5]/(1 + np.exp((t3-tmoh))) + param[6]/(1 + np.exp((t4-tmoh))) + param[7]/(1 + np.exp((t5-tmoh)))
+    + param[8]/(1 + np.exp((t6-tmoh))) + param[9]/(1 + np.exp((t7-tmoh)))
 
     # + param[8]/(1 + np.exp((t8-tmoh)))
 
@@ -321,8 +338,8 @@ def loglikfun(param):
 
     # print((Npar/2)+ 0)
 
-    beta_i[:,1] = param[12]  + param[13]/(1 + np.exp((t1-tmoh))) +  param[14]/(1 + np.exp((t2-tmoh))) + param[15]/(1 + np.exp((t3-tmoh))) + param[16]/(1 + np.exp((t4-tmoh))) + param[17]/(1 + np.exp((t5-tmoh))) \
-                 + param[18]/(1 + np.exp((t6-tmoh))) + param[19]/(1 + np.exp((t7-tmoh)))
+    beta_i[:,1] = param[12]  + param[13]/(1 + np.exp((t1-tmoh))) +  param[14]/(1 + np.exp((t2-tmoh))) + param[15]/(1 + np.exp((t3-tmoh))) + param[16]/(1 + np.exp((t4-tmoh))) \
+                  + param[17]/(1 + np.exp((t5-tmoh))) + param[18]/(1 + np.exp((t6-tmoh))) + param[19]/(1 + np.exp((t7-tmoh)))
 
                  # + param[17]/(1 + np.exp((t8-tmoh)))
 
@@ -409,10 +426,10 @@ def loglikfun(param):
                     loglik = loglik + (math.lgamma(I_synthetic[idxmoh,gg]+r) - (logNfac + math.lgamma(r)) + r*np.log(p) + I_synthetic[idxmoh,gg]*np.log(1-p))
 
                     if(np.isnan(loglik)):
-                        print("I is", I[kk,gg])
-                        print("kk is", kk, idxmoh)
-                        print("param,", param )
-                        print("beta,", beta_i[kk,gg] )
+                        # print("I is", I[kk,gg])
+                        # print("kk is", kk, idxmoh)
+                        # print("param,", param )
+                        # print("beta,", beta_i[kk,gg] )
                         loglik = -1 * np.inf
 
 
@@ -436,26 +453,26 @@ def logposterior(parameter_vector_in):
     return logpriorpdf() + loglikfun(parameter_vector_in)
 
 if __name__ == '__main__': #the main part of the program.
-    Nsmp = 20
+    Nsmp = 40
     # loglikfun([0.15,0.14])
     import time
     start = time.time()
     #Xsmp,Chain,LLsmp, Evid, tmcmcFac  = tmcmc_alpha.tmcmc(logposterior,Npar,X_low,X_up,Nsmp)
-    print("code inside main")
+    # print("code inside main")
 
-    Xsmp,Chain,_,comm = run_tmcmc(Nsmp,all_params,logposterior,parallel_processing,f'{datapath}/stat-file-tmcmc_coupled.txt')
+    # Xsmp,Chain,_,comm = run_tmcmc(Nsmp,all_params,logposterior,parallel_processing,f'{datapath}/stat-file-tmcmc_coupled_synth_210.txt')
 
-    # Xsmp = np.loadtxt('/Users/sudhipv/documents/coupledode/codes/Inference/parallel_TMC/singlephu_2param/muVec.dat')
-    # Chain = np.loadtxt('/Users/sudhipv/documents/coupledode/codes/Inference/parallel_TMC/singlephu_2param/muVec_long.dat')
+    Xsmp = np.loadtxt(f'{datapath}/muVec_coupled_synth_210.dat')
+    Chain = np.loadtxt(f'{datapath}/muVec_long_coupled_synth_210.dat')
 
     # if parallel_processing == 'mpi':
     #     comm.Abort(0)
     end = time.time()
     print(end - start)
 
-    Xsmp = Xsmp.T
-    np.savetxt(f'{datapath}/muVec_coupled.dat',Xsmp)
-    np.savetxt(f'{datapath}/muVec_long_coupled.dat',Chain)
+    # Xsmp = Xsmp.T
+    # np.savetxt(f'{datapath}/muVec_coupled_synth_210.dat',Xsmp)
+    # np.savetxt(f'{datapath}/muVec_long_coupled_synth_210.dat',Chain)
 
     mpl.rcParams.update({'font.size':14})
     for ii in range(0,Npar):
@@ -465,7 +482,7 @@ if __name__ == '__main__': #the main part of the program.
 
         ### CHANGE HERE ######
         ### Uncomment for Synthetic Data ######
-        # plt.plot([0,math.ceil(((1/(Nsmp*Npar))*np.arange(0,len(Chain),Npar))[-1])],[phiTrue[ii],phiTrue[ii]],'r--',label='True')
+        plt.plot([0,math.ceil(((1/(Nsmp*Npar))*np.arange(0,len(Chain),Npar))[-1])],[phiTrue[ii],phiTrue[ii]],'r--',label='True')
 
 
         # plt.legend(loc='best')
@@ -497,8 +514,8 @@ if __name__ == '__main__': #the main part of the program.
         pdfCOV = abs(pdfStd/pdfMean)
 
         ### FOR REAL DATA
-        ax1.axvline(pdfMAP[j],c='r',linestyle='--', label='MAP')
-        print('MAP estimate for '+mylabel[j]+': '+str(pdfMAP[j]))
+        # ax1.axvline(pdfMAP[j],c='r',linestyle='--', label='MAP')
+        # print('MAP estimate for '+mylabel[j]+': '+str(pdfMAP[j]))
 
         print('COV for '+mylabel[j]+': '+str(pdfCOV))
         myYlim = [0.0, 1.1*pdfmax]
@@ -510,7 +527,7 @@ if __name__ == '__main__': #the main part of the program.
         print('=======================')
         ### CHANGE HERE ######
         ### Synthetic Data - Uncomment ######
-        # ax1.plot([phiTrue[j],phiTrue[j]],myYlim,'--r')
+        ax1.plot([phiTrue[j],phiTrue[j]],myYlim,'--r')
         ax1.set_ylabel('pdf')
         ax1.set_xlabel(mylabel[j])
         #plt.xlim([np.min(statSmp[j,:]),np.max(statSmp[j,:])])
@@ -539,8 +556,8 @@ if __name__ == '__main__': #the main part of the program.
 
                 ### CHANGE HERE ######
                 ### Synthetic Data - Uncomment below lines ######
-                # plt.plot([X_low[i],X_up[i]],[phiTrue[j],phiTrue[j]],'r--')
-                # plt.plot([phiTrue[i],phiTrue[i]],[X_low[j],X_up[j]],'r--')
+                plt.plot([X_low[i],X_up[i]],[phiTrue[j],phiTrue[j]],'r--')
+                plt.plot([phiTrue[i],phiTrue[i]],[X_low[j],X_up[j]],'r--')
                 # plt.xlim([phiTrue[i]-0.02,phiTrue[i]+0.02])
                 # plt.ylim([phiTrue[j]-0.02,phiTrue[j]+0.02])
 
@@ -585,8 +602,8 @@ if __name__ == '__main__': #the main part of the program.
 
                 ### CHANGE HERE ######
                 ### Synthetic Data - Uncomment below line ######
-                # plt.plot([X_low[i],X_up[i]],[phiTrue[j],phiTrue[j]],'r--')
-                # plt.plot([phiTrue[i],phiTrue[i]],[X_low[j],X_up[j]],'r--')
+                plt.plot([X_low[i],X_up[i]],[phiTrue[j],phiTrue[j]],'r--')
+                plt.plot([phiTrue[i],phiTrue[i]],[X_low[j],X_up[j]],'r--')
                 # plt.xlim([phiTrue[i]-0.02,phiTrue[i]+0.02])
                 # plt.ylim([phiTrue[j]-0.02,phiTrue[j]+0.02])
 
